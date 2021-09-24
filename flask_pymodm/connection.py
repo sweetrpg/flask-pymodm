@@ -20,7 +20,9 @@ def connect(config=None, **kwargs):
     db_name = config.get('MONGODB_DB_NAME')
     db_connection_alias = config.get('MONGODB_ALIAS_CONNECTION')
     mongodb_options = kwargs
-    pymodm.connect(
-        _get_uri(db_username=db_username, db_password=db_password, db_host=db_host, db_port=db_port,
-                 db_name=db_name), alias=db_connection_alias, **mongodb_options)
+    db_uri = config.get('MONGODB_URI')
+    if not db_uri:
+        db_uri = _get_uri(db_username=db_username, db_password=db_password, db_host=db_host, db_port=db_port,
+                          db_name=db_name)
+    pymodm.connect(db_uri, alias=db_connection_alias, **mongodb_options)
     return pymodm.connection._get_connection(alias=db_connection_alias)
